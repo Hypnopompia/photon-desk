@@ -20,3 +20,9 @@ $ particle call Desk setHeight 50
 
 * Particle Photon
 * HC-SR04 Sonic Ping Sensor
+
+## Geekdesk control panel rj45 pinout
+
+* White (3) - GND
+* Red (8) - Down Button (+5V)
+* Brown (7) - Up Button (+5V)

@@ -31,7 +31,8 @@ uint32_t lastCm, targetCm;
 bool movingUp, movingDown;
 
 unsigned long movingStartTime;    // Keep track of when we started moving so we can timeout
-unsigned long movingTimeOut = 30; // # of seconds; Stop trying to move after moving for this many seconds in case something bad happens
+unsigned long movingTimeOut = 0;  // # of seconds; Stop trying to move after moving for this many seconds in case something bad happens
+unsigned long deskSpeed = 3;      // 3cm per second
 
 void setup() {
 	Particle.function("getHeight", getHeight);
@@ -98,14 +99,20 @@ int setHeight(String command) {
 	uint32_t currentHeight = microsecondsToCentimeters(readPingSensor());
 	targetCm = command.toInt();
 
-	// TODO: We could calculate the distance we need to travel and using the known
+	// Calculate the distance we need to travel and using the known
 	// travel speed of the desk, set a more appropriate timeout rather than hardcoding it.
 
 	if (currentHeight > targetCm) {
+		movingTimeOut = (currentHeight - targetCm) / deskSpeed;
 		goDown();
 	} else if (currentHeight < targetCm) {
+		movingTimeOut = (targetCm - currentHeight) / deskSpeed;
 		goUp();
 	}
+
+	Serial.print("Timeout in ");
+	Serial.print(movingTimeOut);
+	Serial.println(" seconds.");
 
 	return 1;
 }
@@ -117,11 +124,10 @@ int readPingSensor() {
 	do {
 		// TODO: Maybe take a few readings and average them out? Throw out anomolies?
 		duration = ping();
-	} while (microsecondsToCentimeters(duration) > 400 && trycount++ < 50); // More than 400cm is likely an error. Try again
+		cm = microsecondsToCentimeters(duration);
+	} while ( ( cm < 54 || cm > 120 ) && trycount++ < 50); // less than 54cm or more than 120cm is likely an error. Try again
 
 	/* Debugging output */
-	cm = microsecondsToCentimeters(duration);
-
 	if (cm != lastCm) {
 		lastCm = cm;
 		Serial.print(cm);
