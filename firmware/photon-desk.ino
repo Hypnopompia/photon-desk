@@ -68,7 +68,8 @@ void loop() {
 }
 
 void goUp() {
-	Serial.println("Going Up");
+	Serial.print("Going up to ");
+	Serial.println(targetCm);
 	stop();
 	digitalWrite(upPin, HIGH);
 	movingUp = true;
@@ -76,7 +77,8 @@ void goUp() {
 }
 
 void goDown() {
-	Serial.println("Going Down");
+	Serial.print("Going down to ");
+	Serial.println(targetCm);
 	stop();
 	digitalWrite(downPin, HIGH);
 	movingDown = true;
@@ -109,6 +111,8 @@ int setHeight(String command) {
 		movingTimeOut = (targetCm - currentHeight) / deskSpeed;
 		goUp();
 	}
+
+	movingTimeOut += 2; // It takes a bit to get up to speed
 
 	Serial.print("Timeout in ");
 	Serial.print(movingTimeOut);
