@@ -24,7 +24,7 @@
 
 #define trigPin D2 // Trig pin on the HC-SR04
 #define echoPin D6 // Echo pin on the HC-SR04
-#define upPin D4   // Pin connected to the Up button on the smartdesk via an opto-isolator
+#define upPin   D4 // Pin connected to the Up button on the smartdesk via an opto-isolator
 #define downPin D5 // Pin connected to the Down button on the smartdesk via an opto-isolator
 
 uint32_t lastCm, targetCm;
@@ -59,11 +59,19 @@ void loop() {
 	}
 
 	// Target height check
-	if ( (movingUp   && microsecondsToCentimeters(readPingSensor()) >= targetCm) ||
-	     (movingDown && microsecondsToCentimeters(readPingSensor()) <= targetCm)
+	// The desk takes about a cm to come to a full stop, so stop 1cm early
+	if ( (movingUp   && microsecondsToCentimeters(readPingSensor()) >= ( targetCm - 1) ) ||
+	     (movingDown && microsecondsToCentimeters(readPingSensor()) <= ( targetCm + 1) )
 	) { // We've reached our target height. Stop everything!
-		Serial.println("Target height reached. Stop.");
+		Serial.println("Target height reached. Stopping...");
 		stop();
+
+		// Printout the current height
+		delay(1000);
+		lastCm = 0;
+		readPingSensor();
+
+		// TODO: We could 'nudge' the desk to the exact height if it's not close enough.
 	}
 }
 
@@ -101,22 +109,27 @@ int setHeight(String command) {
 	uint32_t currentHeight = microsecondsToCentimeters(readPingSensor());
 	targetCm = command.toInt();
 
-	// Calculate the distance we need to travel and using the known
-	// travel speed of the desk, set a more appropriate timeout rather than hardcoding it.
+	if (currentHeight == targetCm) {
+		Serial.println("Target and current heights are the same.");
+	} else {
+		// Calculate the distance we need to travel and using the known
+		// travel speed of the desk, set a more appropriate timeout rather than hardcoding it.
 
-	if (currentHeight > targetCm) {
-		movingTimeOut = (currentHeight - targetCm) / deskSpeed;
-		goDown();
-	} else if (currentHeight < targetCm) {
-		movingTimeOut = (targetCm - currentHeight) / deskSpeed;
-		goUp();
+		if (currentHeight > targetCm) {
+			movingTimeOut = (currentHeight - targetCm) / deskSpeed;
+			goDown();
+		} else if (currentHeight < targetCm) {
+			movingTimeOut = (targetCm - currentHeight) / deskSpeed;
+			goUp();
+		}
+
+		movingTimeOut += 2; // It takes a bit to get up to speed
+
+		Serial.print("Timeout in ");
+		Serial.print(movingTimeOut);
+		Serial.println(" seconds.");
 	}
 
-	movingTimeOut += 2; // It takes a bit to get up to speed
-
-	Serial.print("Timeout in ");
-	Serial.print(movingTimeOut);
-	Serial.println(" seconds.");
 
 	return 1;
 }
