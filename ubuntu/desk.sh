@@ -18,3 +18,5 @@ echo "Standing" $STANDING
 echo "At Desk" $ATDESK
 
 echo "\""$DATE"\","$HEIGHT","$STANDING","$ATDESK >> $HOME/desk.csv
+
+sqlite3 desk.db "INSERT INTO desk (height, standing, atdesk) VALUES ($HEIGHT, $STANDING, $ATDESK);"
