@@ -100,7 +100,7 @@ void stop() {
 	movingDown = false;
 }
 
-int getHeight(String command) {
+uint32_t getHeight(String command) {
 	lastCm = 0; // Force a debug print to Serial
 	return microsecondsToCentimeters(readPingSensor());
 }
@@ -134,7 +134,7 @@ int setHeight(String command) {
 	return 1;
 }
 
-int readPingSensor() {
+uint32_t readPingSensor() {
 	uint32_t duration, trycount, cm;
 	trycount = 0;
 
@@ -156,7 +156,7 @@ int readPingSensor() {
 	return duration;
 }
 
-int ping() {
+uint32_t ping() {
 	uint32_t duration;
 	pinMode(echoPin, INPUT);
 	pinMode(trigPin, OUTPUT);

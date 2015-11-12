@@ -5,6 +5,22 @@
 DATE=`date +"%Y-%m-%d %H:%M:%S"`
 ATDESK=`cat $HOME/.screenunlocked`
 HEIGHT=`particle call Desk getheight`
+SSID=`/sbin/iwgetid -r`
+
+if lsusb|grep 2b04:c006 &> /dev/null; then
+	DOCKED=1
+else
+	DOCKED=0
+	ATDESK=0
+fi
+
+if [ $SSID == "HitLabs-5" ]
+then
+	ATWORK=1
+else
+	ATWORK=0
+	ATDESK=0
+fi
 
 if [ $HEIGHT -gt 82 ]
 then
@@ -13,10 +29,4 @@ else
 	STANDING=0
 fi
 
-echo "Height" $HEIGHT
-echo "Standing" $STANDING
-echo "At Desk" $ATDESK
-
-echo "\""$DATE"\","$HEIGHT","$STANDING","$ATDESK >> $HOME/desk.csv
-
-sqlite3 desk.db "INSERT INTO desk (height, standing, atdesk) VALUES ($HEIGHT, $STANDING, $ATDESK);"
+sqlite3 desk.db "INSERT INTO desk (created_at, height, standing, docked, atwork, atdesk) VALUES (datetime('now', 'localtime'),$HEIGHT, $STANDING, $DOCKED, $ATWORK, $ATDESK);"
