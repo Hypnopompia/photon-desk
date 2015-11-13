@@ -27,4 +27,5 @@ $ particle call Desk setHeight 50
 * Red (8) - Down Button (+5V)
 * Brown (7) - Up Button (+5V)
 
+![Assembled Board View](https://github.com/Hypnopompia/photon-desk/blob/master/pcb/assembled.jpg?raw=true "Assembled Board View")
 ![Top Board View](https://github.com/Hypnopompia/photon-desk/blob/master/pcb/board-top.png?raw=true "Top Board View")
