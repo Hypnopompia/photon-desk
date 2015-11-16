@@ -18,6 +18,7 @@ $ particle call Desk setHeight 50
 
 ## Parts List
 
+* (1) [GeekdeskV3 Controller PCB](https://github.com/Hypnopompia/photon-desk/tree/master/pcb)
 * (1) [Particle Photon](https://store.particle.io/collections/photon)
 * (1) [HC-SR04 Sonic Ping Sensor](http://www.amazon.com/s/ref=nb_sb_ss_c_0_3?url=search-alias%3Daps&field-keywords=hc-sr04&sprefix=hc-sr04%2Caps%2C202)
 * (1) [2-channel opto-isolator](https://www.digikey.com/product-detail/en/LTV-826/160-1362-5-ND/385832)
