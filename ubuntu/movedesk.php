@@ -3,8 +3,8 @@
 	$photonName = "Desk";
 	$presets = [
 		'max'   => ['height' => 120, 'icon' => '~/bin/desk-stand-icon.png'],
-		'stand' => ['height' =>  97, 'icon' => '~/bin/desk-stand-icon.png'],
-		'sit'   => ['height' =>  67, 'icon' => '~/bin/desk-sit-icon.png'],
+		'stand' => ['height' =>  98, 'icon' => '~/bin/desk-stand-icon.png'],
+		'sit'   => ['height' =>  68, 'icon' => '~/bin/desk-sit-icon.png'],
 		'min'   => ['height' =>  54, 'icon' => '~/bin/desk-sit-icon.png'],
 	];
 
@@ -58,32 +58,6 @@
 		return sprintf($format, $hours, $minutes);
 	}
 
-	if ($standingTime > 0 && $totalTime > 0) {
-		echo "    Time Standing: " . convertToHoursMins($standingTime) . " - " . number_format($standingTime / $totalTime * 100, 1) . "%\n";
-	}
-
-	if ($sittingTime > 0 && $totalTime > 0) {
-		echo "     Time Sitting: " . convertToHoursMins($sittingTime) . " - " . number_format($sittingTime / $totalTime * 100, 1) . "%\n";
-	}
-
-	echo "     Time at desk: " . convertToHoursMins($totalTime) . "\n\n";
-
-	$currentHeight = exec("particle call $photonName getheight");
-	echo "   Current Height: " . $currentHeight . "cm\n";
-
-	$currentPosition = getClosest($currentHeight, $presets);
-	$previousPosition = getPrevious($currentPosition, $presets);
-	$nextPosition = getNext($currentPosition, $presets);
-
-	if (!is_null($previousPosition)) {
-		echo "      Up Position: " . $previousPosition . " (" . $presets[$previousPosition]['height'] . "cm)\n";
-	}
-
-	echo " Current Position: " . $currentPosition . " (" . $presets[$currentPosition]['height'] . "cm)\n";
-
-	if (!is_null($nextPosition)) {
-		echo "    Down Position: " . $nextPosition . " (" . $presets[$nextPosition]['height'] . "cm)\n";
-	}
 
 	if (isset($argv[1])) {
 		$cmd = $argv[1];
@@ -100,6 +74,34 @@
 		} elseif (isset($presets[$cmd])) { // go to the preset
 			exec('notify-send -i ' . $presets[$cmd]['icon'] . ' "Moving desk to ' . $cmd . '"');
 			exec("particle call $photonName setheight " . $presets[$cmd]['height']);
+		}
+
+	} else {
+		if ($standingTime > 0 && $totalTime > 0) {
+			echo "    Time Standing: " . convertToHoursMins($standingTime) . " - " . number_format($standingTime / $totalTime * 100, 1) . "%\n";
+		}
+
+		if ($sittingTime > 0 && $totalTime > 0) {
+			echo "     Time Sitting: " . convertToHoursMins($sittingTime) . " - " . number_format($sittingTime / $totalTime * 100, 1) . "%\n";
+		}
+
+		echo "     Time at desk: " . convertToHoursMins($totalTime) . "\n\n";
+
+		$currentHeight = exec("particle call $photonName getheight");
+		echo "   Current Height: " . $currentHeight . "cm\n";
+
+		$currentPosition = getClosest($currentHeight, $presets);
+		$previousPosition = getPrevious($currentPosition, $presets);
+		$nextPosition = getNext($currentPosition, $presets);
+
+		if (!is_null($previousPosition)) {
+			echo "      Up Position: " . $previousPosition . " (" . $presets[$previousPosition]['height'] . "cm)\n";
+		}
+
+		echo " Current Position: " . $currentPosition . " (" . $presets[$currentPosition]['height'] . "cm)\n";
+
+		if (!is_null($nextPosition)) {
+			echo "    Down Position: " . $nextPosition . " (" . $presets[$nextPosition]['height'] . "cm)\n";
 		}
 
 	}
