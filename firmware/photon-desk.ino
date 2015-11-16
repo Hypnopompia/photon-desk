@@ -22,10 +22,10 @@
 
 #include "application.h"
 
-#define trigPin D2 // Trig pin on the HC-SR04
-#define echoPin D6 // Echo pin on the HC-SR04
-#define upPin   D4 // Pin connected to the Up button on the smartdesk via an opto-isolator
-#define downPin D5 // Pin connected to the Down button on the smartdesk via an opto-isolator
+#define trigPin D6 // Trig pin on the HC-SR04
+#define echoPin D5 // Echo pin on the HC-SR04
+#define upPin   D3 // Pin connected to the Up button on the smartdesk via an opto-isolator
+#define downPin D4 // Pin connected to the Down button on the smartdesk via an opto-isolator
 
 uint32_t lastCm, targetCm;
 bool movingUp, movingDown;
