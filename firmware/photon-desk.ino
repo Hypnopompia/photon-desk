@@ -30,9 +30,10 @@
 uint32_t lastCm, targetCm;
 bool movingUp, movingDown;
 
-unsigned long movingStartTime;    // Keep track of when we started moving so we can timeout
-unsigned long movingTimeOut = 0;  // # of seconds; Stop trying to move after moving for this many seconds in case something bad happens
-unsigned long deskSpeed = 3;      // 3cm per second
+unsigned long lastPublishTime = 0; // Keep track of when we last published and event so we don't flood
+unsigned long movingStartTime;     // Keep track of when we started moving so we can timeout
+unsigned long movingTimeOut = 0;   // # of seconds; Stop trying to move after moving for this many seconds in case something bad happens
+unsigned long deskSpeed = 3;       // 3cm per second
 
 void setup() {
 	Particle.function("getHeight", getHeight);
@@ -54,6 +55,7 @@ void setup() {
 void loop() {
 	// Timeout Check
 	if ( (movingUp || movingDown) && ( (millis() - movingStartTime) / 1000 >= movingTimeOut ) ) {
+		Particle.publish("movetimeout", NULL, 60, PRIVATE);
 		Serial.println("Timeout! Stop.");
 		stop();
 	}
@@ -63,6 +65,7 @@ void loop() {
 	if ( (movingUp   && microsecondsToCentimeters(readPingSensor()) >= ( targetCm - 1) ) ||
 	     (movingDown && microsecondsToCentimeters(readPingSensor()) <= ( targetCm + 1) )
 	) { // We've reached our target height. Stop everything!
+		Particle.publish("targetreached", NULL, 60, PRIVATE);
 		Serial.println("Target height reached. Stopping...");
 		stop();
 
@@ -76,6 +79,7 @@ void loop() {
 }
 
 void goUp() {
+	Particle.publish("movingup", NULL, 60, PRIVATE);
 	Serial.print("Going up to ");
 	Serial.println(targetCm);
 	stop();
@@ -85,6 +89,7 @@ void goUp() {
 }
 
 void goDown() {
+	Particle.publish("movingdown", NULL, 60, PRIVATE);
 	Serial.print("Going down to ");
 	Serial.println(targetCm);
 	stop();
@@ -136,6 +141,7 @@ int setHeight(String command) {
 
 uint32_t readPingSensor() {
 	uint32_t duration, trycount, cm;
+	char publishString[40];
 	trycount = 0;
 
 	do {
@@ -146,6 +152,12 @@ uint32_t readPingSensor() {
 
 	/* Debugging output */
 	if (cm != lastCm) {
+		if ( (movingUp || movingDown) && (millis() - lastPublishTime > 1000) ) {
+			sprintf(publishString, "%d", cm);
+			Particle.publish("height", publishString, 60, PRIVATE);
+			lastPublishTime = millis();
+		}
+
 		lastCm = cm;
 		Serial.print(cm);
 		Serial.print("cm, ");
