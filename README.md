@@ -1,6 +1,8 @@
 photon-desk
 ==============
 
+[![Desk Controller](http://img.youtube.com/vi/VQ_Kc9S85WM/0.jpg)](http://www.youtube.com/watch?v=VQ_Kc9S85WM "Desk Controller")
+
 A wifi enabled adjustable height desk.
 
 Using a Particle Photon, this project allows you to remotely control your [V3 GeekDesk](http://www.geekdesk.com/geekdesk-v3-frame-only) The V3 only comes with a simple up/down button panel and doesn't allow you to have any presets.
