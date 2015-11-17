@@ -150,14 +150,14 @@ uint32_t readPingSensor() {
 		cm = microsecondsToCentimeters(duration);
 	} while ( ( cm < 54 || cm > 120 ) && trycount++ < 50); // less than 54cm or more than 120cm is likely an error. Try again
 
+	if ( (movingUp || movingDown) && (millis() - lastPublishTime > 1000) ) {
+		sprintf(publishString, "%d", cm);
+		Particle.publish("height", publishString, 60, PRIVATE);
+		lastPublishTime = millis();
+	}
+
 	/* Debugging output */
 	if (cm != lastCm) {
-		if ( (movingUp || movingDown) && (millis() - lastPublishTime > 1000) ) {
-			sprintf(publishString, "%d", cm);
-			Particle.publish("height", publishString, 60, PRIVATE);
-			lastPublishTime = millis();
-		}
-
 		lastCm = cm;
 		Serial.print(cm);
 		Serial.print("cm, ");
