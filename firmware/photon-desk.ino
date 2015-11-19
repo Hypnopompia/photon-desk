@@ -33,6 +33,7 @@ bool movingUp, movingDown;
 uint32_t readings[10];
 uint32_t readingIndex = 0;
 
+unsigned long lastPingTime = 0;    // When we're not moving, we want to ping once per second to watch for manual movement.
 unsigned long lastPublishTime = 0; // Keep track of when we last published and event so we don't flood
 unsigned long movingStartTime;     // Keep track of when we started moving so we can timeout
 unsigned long movingTimeOut = 0;   // # of seconds; Stop trying to move after moving for this many seconds in case something bad happens
@@ -78,6 +79,12 @@ void loop() {
 		readPingSensor();
 
 		// TODO: We could 'nudge' the desk to the exact height if it's not close enough.
+	}
+
+		// When we're not moving, we want to ping once per second to watch for manual movement.
+	if ( (!movingUp && !movingDown) && (millis() - lastPingTime > 1100) ) {
+		readPingSensor();
+		lastPingTime = millis();
 	}
 }
 
@@ -183,8 +190,9 @@ uint32_t readPingSensor() {
 
 	} while ( ( !haveGoodReading ) && trycount++ < 50);
 
+	sprintf(publishString, "%d", cm);
+
 	if ( (movingUp || movingDown) && (millis() - lastPublishTime > 1000) ) {
-		sprintf(publishString, "%d", cm);
 		Particle.publish("height", publishString, 60, PRIVATE);
 		lastPublishTime = millis();
 	}
@@ -196,6 +204,11 @@ uint32_t readPingSensor() {
 		Serial.print("cm, ");
 		Serial.print(duration);
 		Serial.println("us");
+
+		if ( (millis() - lastPublishTime > 1000) ) {
+			Particle.publish("height", publishString, 60, PRIVATE);
+			lastPublishTime = millis();
+		}
 	}
 
 	return duration;
