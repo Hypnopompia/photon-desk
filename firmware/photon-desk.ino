@@ -30,6 +30,9 @@
 uint32_t lastCm, targetCm;
 bool movingUp, movingDown;
 
+uint32_t readings[10];
+uint32_t readingIndex = 0;
+
 unsigned long lastPublishTime = 0; // Keep track of when we last published and event so we don't flood
 unsigned long movingStartTime;     // Keep track of when we started moving so we can timeout
 unsigned long movingTimeOut = 0;   // # of seconds; Stop trying to move after moving for this many seconds in case something bad happens
@@ -139,16 +142,46 @@ int setHeight(String command) {
 	return 1;
 }
 
+uint32_t avgReading() {
+	uint32_t sum = 0, nonZero = 0, avg = 0;;
+	for (uint32_t i = 0; i < 10; i++) {
+		if (readings[i] > 0) nonZero++;
+		sum += readings[i];
+	}
+
+	if (sum > 0 && nonZero > 0) {
+		avg = sum / nonZero;
+	}
+
+	return avg;
+}
+
 uint32_t readPingSensor() {
-	uint32_t duration, trycount, cm;
+	uint32_t duration, trycount, cm, avg;
+	uint32_t haveGoodReading = 0;
+	uint32_t readingThreshold = 58 * 3; // about 3cm
+
 	char publishString[40];
 	trycount = 0;
 
 	do {
-		// TODO: Maybe take a few readings and average them out? Throw out anomolies?
 		duration = ping();
 		cm = microsecondsToCentimeters(duration);
-	} while ( ( cm < 54 || cm > 120 ) && trycount++ < 50); // less than 54cm or more than 120cm is likely an error. Try again
+
+		// Do some smoothing on the readings to throw out outliers.
+		avg = avgReading();
+
+		// less than 54cm or more than 120cm is likely an error.
+		// A reading more than 3cm from the average is probably also a bad reading.
+		if (cm >= 54 && cm <= 120 && (avg == 0 || abs(duration - avg) < readingThreshold ) ) {
+			readings[readingIndex++] = duration;
+			if (readingIndex >= 10) readingIndex = 0;
+			haveGoodReading = 1;
+		} else {
+			delay(50);
+		}
+
+	} while ( ( !haveGoodReading ) && trycount++ < 50);
 
 	if ( (movingUp || movingDown) && (millis() - lastPublishTime > 1000) ) {
 		sprintf(publishString, "%d", cm);
