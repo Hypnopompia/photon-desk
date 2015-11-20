@@ -59,6 +59,8 @@ void setup() {
 }
 
 void loop() {
+	uint32_t currentHeight;
+
 	// Timeout Check
 	if ( (movingUp || movingDown) && ( (millis() - movingStartTime) / 1000 >= movingTimeOut ) ) {
 		Particle.publish("movetimeout", NULL, 60, PRIVATE);
@@ -67,19 +69,22 @@ void loop() {
 	}
 
 	// Target height check
-	// The desk takes about a cm to come to a full stop, so stop 1cm early
-	if ( (movingUp   && microsecondsToCentimeters(readPingSensor()) >= ( targetCm - 1) ) ||
-	     (movingDown && microsecondsToCentimeters(readPingSensor()) <= ( targetCm + 1) )
-	) { // We've reached our target height. Stop everything!
-		sprintf(publishString, "%d", targetCm);
-		Particle.publish("targetreached", publishString, 60, PRIVATE);
-		Serial.println("Target height reached. Stopping...");
-		stop();
+	if (movingUp || movingDown) {
+		currentHeight = microsecondsToCentimeters(readPingSensor());
 
-		// Printout the current height
-		delay(1000);
-		lastCm = 0;
-		readPingSensor();
+		if (currentHeight != 0) { // we got a valid reading
+
+			// The desk takes about a cm to come to a full stop, so stop 1cm early
+			if ( (movingUp   && currentHeight >= ( targetCm - 1) ) ||
+			     (movingDown && currentHeight <= ( targetCm + 1) )
+			) { // We've reached our target height. Stop everything!
+				sprintf(publishString, "%d", targetCm);
+				Particle.publish("targetreached", publishString, 60, PRIVATE);
+				Serial.println("Target height reached. Stopping...");
+				stop();
+			}
+
+		}
 	}
 
 	// When we're not moving, we want to ping once per second to watch for manual movement.
@@ -175,25 +180,36 @@ uint32_t readPingSensor() {
 		duration = ping();
 		cm = microsecondsToCentimeters(duration);
 
-		// Do some smoothing on the readings to throw out outliers.
-		avg = avgReading();
-
 		// less than 54cm or more than 120cm is likely an error.
-		// A reading more than 4cm from the average is probably also a bad reading.
-		if (cm >= 54 && cm <= 120 && (avg == 0 || abs(duration - avg) < readingThreshold ) ) {
+		if (cm >= 54 && cm <= 120) {
 			readings[readingIndex++] = duration;
 			if (readingIndex >= 10) readingIndex = 0;
-			haveGoodReading = 1;
+
+			// Do some smoothing on the readings to throw out outliers.
+			avg = avgReading();
+
+			// A reading more than 4cm from the average is probably also a bad reading.
+			if (avg == 0 || abs(duration - avg) < readingThreshold ) {
+				haveGoodReading = 1;
+				Serial.print(".");
+			} else {
+				delay(50);
+				Serial.print("o");
+			}
+
 		} else {
-			delay(20);
+			delay(50);
+			Serial.print("x");
 		}
 
-	} while ( ( !haveGoodReading ) && trycount++ < 10);
+	} while ( ( !haveGoodReading ) && trycount++ < 25);
+
+	Serial.print("  ");
 
 	if (haveGoodReading == 0) {
-		Serial.print("Failed to get reading. Avg: ");
-		Serial.println(avg);
-		Serial.print("Last Reading: ");
+		Serial.print("Bad reading. Avg: ");
+		Serial.print(avg);
+		Serial.print(" Reading: ");
 		Serial.println(duration);
 
 		duration = 0;
@@ -208,7 +224,7 @@ uint32_t readPingSensor() {
 	}
 
 	/* Debugging output */
-	if (cm != lastCm || cm == 0) {
+	if (true || cm != lastCm) {
 		lastCm = cm;
 		Serial.print(cm);
 		Serial.print("cm, ");
