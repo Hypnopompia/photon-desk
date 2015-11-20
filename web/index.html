@@ -144,7 +144,15 @@
 					spark.getDevice(deviceName, function(err, d) {
 						device = d;
 						getHeight();
-						setInterval(getHeight, 5000);
+
+						device.onEvent(false, function(data){
+							if (data.name == "height") {
+								currentHeight = data.data;
+								$('#currentHeight').html(currentHeight + "cm");
+							}
+
+							// console.log(data);
+						});
 					});
 				}
 

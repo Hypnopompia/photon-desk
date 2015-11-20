@@ -203,7 +203,7 @@ uint32_t readPingSensor() {
 	}
 
 	/* Debugging output */
-	if (cm != lastCm) {
+	if (cm != lastCm || cm == 0) {
 		lastCm = cm;
 		Serial.print(cm);
 		Serial.print("cm, ");
