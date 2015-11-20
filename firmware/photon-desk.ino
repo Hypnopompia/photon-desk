@@ -167,7 +167,7 @@ uint32_t avgReading() {
 uint32_t readPingSensor() {
 	uint32_t duration, trycount, cm, avg;
 	uint32_t haveGoodReading = 0;
-	uint32_t readingThreshold = 58 * 3; // about 3cm
+	uint32_t readingThreshold = 58 * 4; // about 4cm
 
 	trycount = 0;
 
@@ -179,18 +179,23 @@ uint32_t readPingSensor() {
 		avg = avgReading();
 
 		// less than 54cm or more than 120cm is likely an error.
-		// A reading more than 3cm from the average is probably also a bad reading.
+		// A reading more than 4cm from the average is probably also a bad reading.
 		if (cm >= 54 && cm <= 120 && (avg == 0 || abs(duration - avg) < readingThreshold ) ) {
 			readings[readingIndex++] = duration;
 			if (readingIndex >= 10) readingIndex = 0;
 			haveGoodReading = 1;
 		} else {
-			delay(50);
+			delay(20);
 		}
 
-	} while ( ( !haveGoodReading ) && trycount++ < 50);
+	} while ( ( !haveGoodReading ) && trycount++ < 10);
 
 	if (haveGoodReading == 0) {
+		Serial.print("Failed to get reading. Avg: ");
+		Serial.println(avg);
+		Serial.print("Last Reading: ");
+		Serial.println(duration);
+
 		duration = 0;
 		cm = 0;
 	}
