@@ -39,6 +39,8 @@ unsigned long movingStartTime;     // Keep track of when we started moving so we
 unsigned long movingTimeOut = 0;   // # of seconds; Stop trying to move after moving for this many seconds in case something bad happens
 unsigned long deskSpeed = 3;       // 3cm per second
 
+char publishString[40];
+
 void setup() {
 	Particle.function("getHeight", getHeight);
 	Particle.function("setHeight", setHeight);
@@ -69,7 +71,8 @@ void loop() {
 	if ( (movingUp   && microsecondsToCentimeters(readPingSensor()) >= ( targetCm - 1) ) ||
 	     (movingDown && microsecondsToCentimeters(readPingSensor()) <= ( targetCm + 1) )
 	) { // We've reached our target height. Stop everything!
-		Particle.publish("targetreached", NULL, 60, PRIVATE);
+		sprintf(publishString, "%d", targetCm);
+		Particle.publish("targetreached", publishString, 60, PRIVATE);
 		Serial.println("Target height reached. Stopping...");
 		stop();
 
@@ -77,11 +80,9 @@ void loop() {
 		delay(1000);
 		lastCm = 0;
 		readPingSensor();
-
-		// TODO: We could 'nudge' the desk to the exact height if it's not close enough.
 	}
 
-		// When we're not moving, we want to ping once per second to watch for manual movement.
+	// When we're not moving, we want to ping once per second to watch for manual movement.
 	if ( (!movingUp && !movingDown) && (millis() - lastPingTime > 1100) ) {
 		readPingSensor();
 		lastPingTime = millis();
@@ -168,7 +169,6 @@ uint32_t readPingSensor() {
 	uint32_t haveGoodReading = 0;
 	uint32_t readingThreshold = 58 * 3; // about 3cm
 
-	char publishString[40];
 	trycount = 0;
 
 	do {
@@ -189,6 +189,11 @@ uint32_t readPingSensor() {
 		}
 
 	} while ( ( !haveGoodReading ) && trycount++ < 50);
+
+	if (haveGoodReading == 0) {
+		duration = 0;
+		cm = 0;
+	}
 
 	sprintf(publishString, "%d", cm);
 
