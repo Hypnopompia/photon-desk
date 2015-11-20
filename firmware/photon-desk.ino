@@ -214,6 +214,11 @@ uint32_t readPingSensor() {
 
 		duration = 0;
 		cm = 0;
+	} else {
+		Serial.print(cm);
+		Serial.print("cm, ");
+		Serial.print(duration);
+		Serial.println("us");
 	}
 
 	sprintf(publishString, "%d", cm);
@@ -226,10 +231,6 @@ uint32_t readPingSensor() {
 	/* Debugging output */
 	if (cm != lastCm) {
 		lastCm = cm;
-		Serial.print(cm);
-		Serial.print("cm, ");
-		Serial.print(duration);
-		Serial.println("us");
 
 		if ( (millis() - lastPublishTime > 1000) ) {
 			Particle.publish("height", publishString, 60, PRIVATE);
