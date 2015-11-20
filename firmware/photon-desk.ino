@@ -76,7 +76,7 @@ void loop() {
 
 			// The desk takes about a cm to come to a full stop, so stop 1cm early
 			if ( (movingUp   && currentHeight >= ( targetCm - 1) ) ||
-			     (movingDown && currentHeight <= ( targetCm + 1) )
+			     (movingDown && currentHeight <= ( targetCm + 3) )
 			) { // We've reached our target height. Stop everything!
 				sprintf(publishString, "%d", targetCm);
 				Particle.publish("targetreached", publishString, 60, PRIVATE);
