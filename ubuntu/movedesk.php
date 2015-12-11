@@ -3,7 +3,7 @@
 	$photonName = "Desk";
 	$presets = [
 		'max'   => ['height' => 120, 'icon' => '~/bin/desk-stand-icon.png'],
-		'stand' => ['height' =>  98, 'icon' => '~/bin/desk-stand-icon.png'],
+		'stand' => ['height' =>  101, 'icon' => '~/bin/desk-stand-icon.png'],
 		'sit'   => ['height' =>  68, 'icon' => '~/bin/desk-sit-icon.png'],
 		'min'   => ['height' =>  54, 'icon' => '~/bin/desk-sit-icon.png'],
 	];
