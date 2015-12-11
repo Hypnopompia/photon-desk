@@ -3,7 +3,7 @@ photon-desk
 
 [![Desk Controller](http://img.youtube.com/vi/VQ_Kc9S85WM/0.jpg)](http://www.youtube.com/watch?v=VQ_Kc9S85WM "Desk Controller")
 
-[![Tindie](https://d2ss6ovg47m0r5.cloudfront.net/badges/tindie-mediums.png)](https://www.tindie.com/stores/TJ_Hunter/?ref=offsite_badges&utm_source=sellers_TJ_Hunter&utm_medium=badges&utm_campaign=badge_medium)
+[![Tindie](https://d2ss6ovg47m0r5.cloudfront.net/badges/tindie-mediums.png)](https://www.tindie.com/products/TJ_Hunter/photon-geekdesk-controller/)
 
 A wifi enabled adjustable height desk.
 
