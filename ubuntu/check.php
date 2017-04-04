@@ -12,7 +12,7 @@ foreach ($todaysActivity as $activity) {
 	$standing = ("1" == $activity['atdesk'] && "1" == $activity['standing']);
 	$sitting = ("1" == $activity['atdesk'] && "0" == $activity['standing']);
 
-	if (($currentlyStanding && $sitting) || ($currentlySitting && $standing)) {
+	if ("0" == $activity['atdesk'] || ($currentlyStanding && $sitting) || ($currentlySitting && $standing)) {
 		break;
 	}
 
