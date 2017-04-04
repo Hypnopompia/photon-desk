@@ -1,6 +1,5 @@
 #!/usr/bin/php -q
 <?php
-$photonName = "Desk";
 $db = new PDO('sqlite:' . __DIR__ . '/desk.db');
 
 $currentResult = $db->query('select * from desk order by id desc limit 1;')->fetch();
@@ -28,13 +27,13 @@ if ($currentlyStanding) {
 
 	if ($sessionLengthMinutes >= 90) {
 		$alert = "You have been standing for " . $sessionLengthMinutes . " minutes. Sit down for a bit.\n";
-		exec('notify-send -i error "' . $alert . '"');
+		exec('/usr/bin/notify-send -i error "' . $alert . '"');
 	}
 } elseif ($currentlySitting) {
 	echo "You have been sitting for " . $sessionLengthMinutes . " minutes.\n";
 	if ($sessionLengthMinutes >= 30) {
 		$alert = "You have been sitting for " . $sessionLengthMinutes . " minutes. Time to stand up!\n";
-		exec('notify-send -i error "' . $alert . '"');
+		exec('/usr/bin/notify-send -i error "' . $alert . '"');
 	}
 } else {
 	echo "You are not at your standing desk.\n";
