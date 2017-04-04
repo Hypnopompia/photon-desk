@@ -26,13 +26,13 @@ foreach ($todaysActivity as $activity) {
 if ($currentlyStanding) {
 	echo "You have been standing for " . $sessionLengthMinutes . " minutes.\n";
 
-	if ($sessionLengthMinutes > 90) {
+	if ($sessionLengthMinutes >= 90) {
 		$alert = "You have been standing for " . $sessionLengthMinutes . " minutes. Sit down for a bit.\n";
 		exec('notify-send -i error "' . $alert . '"');
 	}
 } elseif ($currentlySitting) {
 	echo "You have been sitting for " . $sessionLengthMinutes . " minutes.\n";
-	if ($sessionLengthMinutes > 30) {
+	if ($sessionLengthMinutes >= 30) {
 		$alert = "You have been sitting for " . $sessionLengthMinutes . " minutes. Time to stand up!\n";
 		exec('notify-send -i error "' . $alert . '"');
 	}
