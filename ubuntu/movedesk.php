@@ -3,8 +3,8 @@
 	$photonName = "Desk";
 	$presets = [
 		'max'   => ['height' => 120, 'icon' => '~/bin/desk-stand-icon.png'],
-		'stand' => ['height' =>  101, 'icon' => '~/bin/desk-stand-icon.png'],
-		'sit'   => ['height' =>  68, 'icon' => '~/bin/desk-sit-icon.png'],
+		'stand' => ['height' =>  94, 'icon' => '~/bin/desk-stand-icon.png'],
+		'sit'   => ['height' =>  66, 'icon' => '~/bin/desk-sit-icon.png'],
 		'min'   => ['height' =>  54, 'icon' => '~/bin/desk-sit-icon.png'],
 	];
 
@@ -57,7 +57,6 @@
 		$minutes = ($time % 60);
 		return sprintf($format, $hours, $minutes);
 	}
-
 
 	if (isset($argv[1])) {
 		$cmd = $argv[1];
