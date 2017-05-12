@@ -31,6 +31,9 @@ $ particle call Desk setHeight 50
 * (2) [220Ω resistors](https://www.digikey.com/product-detail/en/CFR-50JB-52-220R/220H-ND/1291)
 * (2) [RJ45 8-pin connector](https://www.sparkfun.com/products/643)
 
+## Assembly Instructions
+Assembly instructions can be found here: [http://imgur.com/a/hMbX6](http://imgur.com/a/hMbX6)
+
 ## Geekdesk control panel rj45 pinout
 
 * White (3) - GND
