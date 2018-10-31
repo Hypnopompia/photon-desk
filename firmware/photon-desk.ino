@@ -229,7 +229,7 @@ uint32_t readPingSensor() {
 	}
 
 	/* Debugging output */
-	if (cm != lastCm) {
+	if (cm != lastCm || (millis() - lastPublishTime) > 5000 ) {
 		lastCm = cm;
 
 		if ( (millis() - lastPublishTime > 1000) ) {
