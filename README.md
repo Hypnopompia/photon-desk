@@ -11,6 +11,8 @@ Using an HC-SR04 Ultrasonic distance sensor attached to the bottom of the desk a
 
 This project gives you the ability to get and set the height of your desk (in centimeters) using the Particle's REST api
 
+For a great compatible Mac app that works with this controller, checkout https://github.com/bdolman/StandUp
+
 ```
 $ particle call Desk getHeight
 97
