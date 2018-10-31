@@ -3,8 +3,6 @@ photon-desk
 
 [![Desk Controller](http://img.youtube.com/vi/VQ_Kc9S85WM/0.jpg)](http://www.youtube.com/watch?v=VQ_Kc9S85WM "Desk Controller")
 
-[![Tindie](https://d2ss6ovg47m0r5.cloudfront.net/badges/tindie-mediums.png)](https://www.tindie.com/products/TJ_Hunter/photon-geekdesk-controller/)
-
 A wifi enabled adjustable height desk.
 
 Using a Particle Photon, this project allows you to remotely control your [V3 GeekDesk](http://www.geekdesk.com/geekdesk-v3-frame-only) The V3 only comes with a simple up/down button panel and doesn't allow you to have any presets.
@@ -30,6 +28,9 @@ $ particle call Desk setHeight 50
 * (2) [12 pin female header](https://www.digikey.com/product-detail/en/PPTC121LFBN-RC/S6100-ND/807231)
 * (2) [220Ω resistors](https://www.digikey.com/product-detail/en/CFR-50JB-52-220R/220H-ND/1291)
 * (2) [RJ45 8-pin connector](https://www.sparkfun.com/products/643)
+
+## Assembly Instructions
+Assembly instructions can be found here: [http://imgur.com/a/hMbX6](http://imgur.com/a/hMbX6)
 
 ## Geekdesk control panel rj45 pinout
 
